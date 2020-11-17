@@ -43,10 +43,10 @@ public class MenuService {
     @Transactional
     public boolean updateMenuRole(Integer rid, Integer[] mids) {
         menuRoleMapper.deleteByRid(rid);
-        if (mids != null) {
-            Integer result = menuRoleMapper.insertRecord(rid, mids);
-            return result == mids.length;
+        if (mids == null || mids.length == 0) {
+            return true;
         }
-        return true;
+        Integer result = menuRoleMapper.insertRecord(rid, mids);
+        return result == mids.length;
     }
 }

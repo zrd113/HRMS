@@ -1,18 +1,20 @@
 package org.zrd.vhr.controller.emp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zrd.vhr.bean.*;
 import org.zrd.vhr.service.*;
-import java.util.List;
+import org.zrd.vhr.utils.POIUtils;
 
+import java.util.List;
 
 /**
  * @Author zrd
  * @Date 2020/11/11
  */
 @RestController
-@RequestMapping("/emp/basic")
+@RequestMapping("/employee/basic")
 public class EmpBasicController {
 
     @Autowired
@@ -76,6 +78,28 @@ public class EmpBasicController {
     @GetMapping("/deps")
     public List<Department> getAllDepartments() {
         return departmentService.getAllDepartments();
+    }
+
+    @DeleteMapping("/{id}")
+    public RespBean deleteEmpById(@PathVariable Integer id) {
+        if (employeeService.deleteEmpById(id) == 1) {
+            return RespBean.ok("删除成功");
+        }
+        return RespBean.error("删除失败");
+    }
+
+    @PutMapping("/")
+    public RespBean updateEmp(@RequestBody Employee employee) {
+        if (employeeService.updateEmp(employee) == 1) {
+            return RespBean.ok("更新成功");
+        }
+        return RespBean.error("更新失败");
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportData() {
+        List<Employee> list = (List<Employee>) employeeService.getEmployeeByPage(null, null, null).getData();
+        return POIUtils.employee2Excel(list);
     }
 }
 

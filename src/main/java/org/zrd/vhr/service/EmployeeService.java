@@ -6,6 +6,9 @@ import org.zrd.vhr.bean.Employee;
 import org.zrd.vhr.bean.RespPageBean;
 import org.zrd.vhr.mapper.EmployeeMapper;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +20,10 @@ public class EmployeeService {
 
     @Autowired
     EmployeeMapper employeeMapper;
+
+    SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+    DecimalFormat decimalFormat = new DecimalFormat("##.00");
 
     public RespPageBean getEmployeeByPage(Integer page, Integer size, String keyword) {
         if (page != null && size !=null) {
@@ -31,11 +38,23 @@ public class EmployeeService {
     }
 
     public Integer addEmp(Employee employee) {
+        Date beginContract = employee.getBeginContract();
+        Date endContract = employee.getEndContract();
+        Double month = (Double.parseDouble(yearFormat.format(endContract)) - Double.parseDouble(yearFormat.format(beginContract))) * 12 + (Double.parseDouble(monthFormat.format(endContract)) - Double.parseDouble(monthFormat.format(beginContract)));
+        employee.setContractTerm(Double.parseDouble(decimalFormat.format(month / 12)));
         return employeeMapper.insertSelective(employee);
     }
 
     public Integer maxWordID() {
         return employeeMapper.maxWordID();
+    }
+
+    public Integer deleteEmpById(Integer id) {
+        return employeeMapper.deleteByPrimaryKey(id);
+    }
+
+    public Integer updateEmp(Employee employee) {
+        return employeeMapper.updateByPrimaryKeySelective(employee);
     }
 }
 
