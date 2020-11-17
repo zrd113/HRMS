@@ -22,4 +22,6 @@ public interface DepartmentMapper {
     void addDep(Department department);
 
     void deleteDepById(Department department);
+
+    List<Department> getAllDepartmentsWithoutChildren();
 }

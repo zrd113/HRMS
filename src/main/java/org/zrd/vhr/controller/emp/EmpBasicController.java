@@ -3,6 +3,7 @@ package org.zrd.vhr.controller.emp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.zrd.vhr.bean.*;
 import org.zrd.vhr.service.*;
 import org.zrd.vhr.utils.POIUtils;
@@ -100,6 +101,12 @@ public class EmpBasicController {
     public ResponseEntity<byte[]> exportData() {
         List<Employee> list = (List<Employee>) employeeService.getEmployeeByPage(null, null, null).getData();
         return POIUtils.employee2Excel(list);
+    }
+
+    @PostMapping("/import")
+    public RespBean importData(MultipartFile file) {
+        List<Employee> list = POIUtils.excel2Employee(file, nationService.getAllNations(), politicsstatusService.getAllPoliticsstatus(), departmentService.getAllDepartmentsWithoutChildren(), positionService.getAllPositions(), jobLevelService.getAllJobLevels());
+        return RespBean.ok("上传成功");
     }
 }
 

@@ -3,6 +3,7 @@ package org.zrd.vhr.bean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class JobLevel {
     private Integer id;
@@ -11,15 +12,24 @@ public class JobLevel {
 
     private String titleLevel;
 
+    public JobLevel() {
+    }
+
+    public JobLevel(String name) {
+        this.name = name;
+    }
+
     @Override
-    public String toString() {
-        return "JobLevel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", titleLevel='" + titleLevel + '\'' +
-                ", createDate=" + createDate +
-                ", enabled=" + enabled +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JobLevel jobLevel = (JobLevel) o;
+        return Objects.equals(name, jobLevel.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")

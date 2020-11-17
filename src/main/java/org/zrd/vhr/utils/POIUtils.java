@@ -9,10 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.zrd.vhr.bean.Employee;
+import org.springframework.web.multipart.MultipartFile;
+import org.zrd.vhr.bean.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -187,6 +189,9 @@ public class POIUtils {
             HSSFCell cell24 = row.createCell(24);
             cell24.setCellValue(emp.getEndContract());
             cell24.setCellStyle(dateCellStyle);
+            HSSFCell cell25 = row.createCell(25);
+            cell25.setCellStyle(dateCellStyle);
+            cell25.setCellValue(emp.getConversionTime());
         }
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -201,4 +206,151 @@ public class POIUtils {
         return new ResponseEntity<byte[]>(stream.toByteArray(), headers, HttpStatus.CREATED);
     }
 
+    public static List<Employee> excel2Employee(MultipartFile file, List<Nation> allNations, List<Politicsstatus> allPoliticsstatus, List<Department> allDepartments, List<Position> allPositions, List<JobLevel> allJobLevels) {
+        List<Employee> list = new ArrayList<>();
+        Employee employee = null;
+        try {
+            HSSFWorkbook workbook = new HSSFWorkbook(file.getInputStream());
+            //1.获取workbook中的表单数量
+            int numberOfSheets = workbook.getNumberOfSheets();
+            for (int i = 0; i < numberOfSheets; i++) {
+                //2.获取表单
+                HSSFSheet sheet = workbook.getSheetAt(i);
+                //3.获取表单中的行数
+                int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
+                employee = new Employee();
+                for (int j = 0; j < physicalNumberOfRows; j++) {
+                    if (j == 0) {
+                        //跳过标题行
+                        continue;
+                    }
+                    //4.获取行
+                    HSSFRow row = sheet.getRow(j);
+                    if (row == null) {
+                        //防止数据中有空行
+                        continue;
+                    }
+                    //5.获取列数
+                    int physicalNumberOfCells = row.getPhysicalNumberOfCells();
+                    for (int k = 0; k < physicalNumberOfCells; k++) {
+                        HSSFCell cell = row.getCell(k);
+                        switch (cell.getCellType()) {
+                            case STRING:
+                                String cellValue = cell.getStringCellValue();
+                                switch (k) {
+                                    case 1:
+                                        employee.setName(cellValue);
+                                        break;
+                                    case 2:
+                                        employee.setWorkID(cellValue);
+                                        break;
+                                    case 3:
+                                        employee.setGender(cellValue);
+                                        break;
+                                    case 5:
+                                        employee.setIdCard(cellValue);
+                                        break;
+                                    case 6:
+                                        employee.setWedlock(cellValue);
+                                        break;
+                                    case 7:
+                                        int nationIndex = allNations.indexOf(new Nation(cellValue));
+                                        employee.setNationId(allNations.get(nationIndex).getId());
+                                        break;
+                                    case 8:
+                                        employee.setNativePlace(cellValue);
+                                        break;
+                                    case 9:
+                                        int politicsIndex = allPoliticsstatus.indexOf(new Politicsstatus(cellValue));
+                                        employee.setPoliticId(allPoliticsstatus.get(politicsIndex).getId());
+                                        break;
+                                    case 10:
+                                        employee.setPhone(cellValue);
+                                        break;
+                                    case 11:
+                                        employee.setAddress(cellValue);
+                                        break;
+                                    case 12:
+                                        int departmentIndex = allDepartments.indexOf(new Department(cellValue));
+                                        employee.setDepartmentId(allDepartments.get(departmentIndex).getId());
+                                        break;
+                                    case 13:
+                                        int jobLevelIndex = allJobLevels.indexOf(new JobLevel(cellValue));
+                                        employee.setJobLevelId(allJobLevels.get(jobLevelIndex).getId());
+                                        break;
+                                    case 14:
+                                        int posIndex = allPositions.indexOf(new Position(cellValue));
+                                        employee.setPosId(allPoliticsstatus.get(posIndex).getId());
+                                        break;
+                                    case 15:
+                                        employee.setEngageForm(cellValue);
+                                        break;
+                                    case 16:
+                                        employee.setTiptopDegree(cellValue);
+                                        break;
+                                    case 17:
+                                        employee.setSpecialty(cellValue);
+                                        break;
+                                    case 18:
+                                        employee.setSchool(cellValue);
+                                        break;
+                                    case 20:
+                                        employee.setWorkState(cellValue);
+                                        break;
+                                    case 21:
+                                        employee.setEmail(cellValue);
+                                        break;
+                                }
+                                break;
+                            default: {
+                                switch (k) {
+                                    case 4:
+                                        employee.setBirthday(cell.getDateCellValue());
+                                        break;
+                                    case 19:
+                                        employee.setBeginDate(cell.getDateCellValue());
+                                        break;
+                                    case 23:
+                                        employee.setBeginContract(cell.getDateCellValue());
+                                        break;
+                                    case 24:
+                                        employee.setEndContract(cell.getDateCellValue());
+                                        break;
+                                    case 22:
+                                        employee.setContractTerm(cell.getNumericCellValue());
+                                        break;
+                                    case 25:
+                                        employee.setConversionTime(cell.getDateCellValue());
+                                        break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    list.add(employee);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return list;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
