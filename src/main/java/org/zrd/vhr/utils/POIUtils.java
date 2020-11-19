@@ -74,6 +74,7 @@ public class POIUtils {
         sheet.setColumnWidth(22, 14 * 256);
         sheet.setColumnWidth(23, 15 * 256);
         sheet.setColumnWidth(24, 15 * 256);
+        sheet.setColumnWidth(25, 15 * 256);
 
         //创建标题行
         HSSFRow r0 = sheet.createRow(0);
@@ -152,6 +153,9 @@ public class POIUtils {
         HSSFCell c24 = r0.createCell(24);
         c24.setCellStyle(headStyle);
         c24.setCellValue("合同终止日期");
+        HSSFCell c25 = r0.createCell(25);
+        c25.setCellStyle(headStyle);
+        c25.setCellValue("转正时间");
 
         for (int i = 0; i < list.size(); i++) {
             Employee emp = list.get(i);
@@ -211,6 +215,7 @@ public class POIUtils {
         Employee employee = null;
         try {
             HSSFWorkbook workbook = new HSSFWorkbook(file.getInputStream());
+
             //1.获取workbook中的表单数量
             int numberOfSheets = workbook.getNumberOfSheets();
             for (int i = 0; i < numberOfSheets; i++) {
@@ -218,7 +223,6 @@ public class POIUtils {
                 HSSFSheet sheet = workbook.getSheetAt(i);
                 //3.获取表单中的行数
                 int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
-                employee = new Employee();
                 for (int j = 0; j < physicalNumberOfRows; j++) {
                     if (j == 0) {
                         //跳过标题行
@@ -232,6 +236,7 @@ public class POIUtils {
                     }
                     //5.获取列数
                     int physicalNumberOfCells = row.getPhysicalNumberOfCells();
+                    employee = new Employee();
                     for (int k = 0; k < physicalNumberOfCells; k++) {
                         HSSFCell cell = row.getCell(k);
                         switch (cell.getCellType()) {
@@ -280,7 +285,7 @@ public class POIUtils {
                                         break;
                                     case 14:
                                         int posIndex = allPositions.indexOf(new Position(cellValue));
-                                        employee.setPosId(allPoliticsstatus.get(posIndex).getId());
+                                        employee.setPosId(allPositions.get(posIndex).getId());
                                         break;
                                     case 15:
                                         employee.setEngageForm(cellValue);

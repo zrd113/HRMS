@@ -25,12 +25,12 @@ public class EmployeeService {
     SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
     DecimalFormat decimalFormat = new DecimalFormat("##.00");
 
-    public RespPageBean getEmployeeByPage(Integer page, Integer size, String keyword) {
+    public RespPageBean getEmployeeByPage(Integer page, Integer size, Employee employee) {
         if (page != null && size !=null) {
             page = (page - 1) * size;
         }
-        List<Employee> data = employeeMapper.getEmployeeByPage(page, size, keyword);
-        Long total = employeeMapper.getTotal(keyword);
+        List<Employee> data = employeeMapper.getEmployeeByPage(page, size, employee.getName());
+        Long total = employeeMapper.getTotal(employee.getName());
         RespPageBean respPageBean = new RespPageBean();
         respPageBean.setData(data);
         respPageBean.setTotal(total);
@@ -55,6 +55,10 @@ public class EmployeeService {
 
     public Integer updateEmp(Employee employee) {
         return employeeMapper.updateByPrimaryKeySelective(employee);
+    }
+
+    public Integer addEmps(List<Employee> list) {
+        return employeeMapper.addEmps(list);
     }
 }
 
