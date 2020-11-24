@@ -1,5 +1,6 @@
 package org.zrd.vhr.service;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zrd.vhr.bean.Employee;
@@ -21,16 +22,18 @@ public class EmployeeService {
     @Autowired
     EmployeeMapper employeeMapper;
 
+    @Autowired
+    RabbitTemplate rabbitTemplate;
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
     DecimalFormat decimalFormat = new DecimalFormat("##.00");
 
-    public RespPageBean getEmployeeByPage(Integer page, Integer size, Employee employee) {
-        if (page != null && size !=null) {
+    public RespPageBean getEmployeeByPage(Integer page, Integer size, Employee employee, Date[] beginDateScope) {
+        if (page != null && size != null) {
             page = (page - 1) * size;
         }
-        List<Employee> data = employeeMapper.getEmployeeByPage(page, size, employee.getName());
-        Long total = employeeMapper.getTotal(employee.getName());
+        List<Employee> data = employeeMapper.getEmployeeByPage(page, size, employee, beginDateScope);
+        Long total = employeeMapper.getTotal(employee, beginDateScope);
         RespPageBean respPageBean = new RespPageBean();
         respPageBean.setData(data);
         respPageBean.setTotal(total);
@@ -42,7 +45,12 @@ public class EmployeeService {
         Date endContract = employee.getEndContract();
         Double month = (Double.parseDouble(yearFormat.format(endContract)) - Double.parseDouble(yearFormat.format(beginContract))) * 12 + (Double.parseDouble(monthFormat.format(endContract)) - Double.parseDouble(monthFormat.format(beginContract)));
         employee.setContractTerm(Double.parseDouble(decimalFormat.format(month / 12)));
-        return employeeMapper.insertSelective(employee);
+        int result = employeeMapper.insertSelective(employee);
+        if (result == 1) {
+            Employee emp = employeeMapper.getEmployeeById(employee.getId());
+            rabbitTemplate.convertAndSend("zrd.mail.welcome", emp);
+        }
+            return result;
     }
 
     public Integer maxWordID() {

@@ -8,6 +8,7 @@ import org.zrd.vhr.bean.*;
 import org.zrd.vhr.service.*;
 import org.zrd.vhr.utils.POIUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,8 +38,8 @@ public class EmpBasicController {
     DepartmentService departmentService;
 
     @GetMapping("/")
-    public RespPageBean getEmployeeByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size, Employee employee, String[] beginDateScope) {
-        return employeeService.getEmployeeByPage(page, size, employee);
+    public RespPageBean getEmployeeByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size, Employee employee, Date[] beginDateScope) {
+        return employeeService.getEmployeeByPage(page, size, employee, beginDateScope);
     }
 
     @PostMapping("/")
@@ -99,7 +100,7 @@ public class EmpBasicController {
 
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportData() {
-        List<Employee> list = (List<Employee>) employeeService.getEmployeeByPage(null, null, null).getData();
+        List<Employee> list = (List<Employee>) employeeService.getEmployeeByPage(null, null, null, null).getData();
         return POIUtils.employee2Excel(list);
     }
 

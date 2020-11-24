@@ -3,6 +3,7 @@ package org.zrd.vhr.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.zrd.vhr.bean.Employee;
 
+import java.util.Date;
 import java.util.List;
 
 public interface EmployeeMapper {
@@ -18,11 +19,13 @@ public interface EmployeeMapper {
 
     int updateByPrimaryKey(Employee record);
 
-    List<Employee> getEmployeeByPage(@Param("page") Integer page, @Param("size") Integer size, @Param("keyword") String keyword);
+    List<Employee> getEmployeeByPage(@Param("page") Integer page, @Param("size") Integer size, @Param("emp") Employee employee, @Param("beginDateScope") Date[] beginDateScope);
 
-    Long getTotal(String keyword);
+    Long getTotal(@Param("emp") Employee employee, @Param("beginDateScope") Date[] beginDateScope);
 
     Integer maxWordID();
 
     Integer addEmps(@Param("list") List<Employee> list);
+
+    Employee getEmployeeById(Integer id);
 }

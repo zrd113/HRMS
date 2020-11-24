@@ -2,9 +2,10 @@ package org.zrd.vhr.bean;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Employee {
+public class Employee implements Serializable {
     @Override
     public String toString() {
         return "Employee{" +

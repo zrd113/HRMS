@@ -1,8 +1,9 @@
 package org.zrd.vhr.bean;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Politicsstatus {
+public class Politicsstatus implements Serializable {
     private Integer id;
 
     private String name;
