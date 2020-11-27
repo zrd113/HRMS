@@ -15,6 +15,4 @@ public class RabbitQueue {
     Queue queue() {
         return new Queue("zrd.mail.welcome");
     }
-
-
 }
