@@ -59,15 +59,66 @@
     school, beginDate, workState, workID, contractTerm, conversionTime, notWorkDate, 
     beginContract, endContract, workAge
     </sql>
+    <resultMap id="EmployeeWithSalary" type="org.zrd.vhr.bean.Employee" extends="BaseResultMap">
+        <association property="salary" javaType="org.zrd.vhr.bean.Salary">
+            <id column="sid" property="id" jdbcType="INTEGER"/>
+            <result column="sbasicSalary" property="basicSalary" jdbcType="INTEGER"/>
+            <result column="sbonus" property="bonus" jdbcType="INTEGER"/>
+            <result column="slunchSalary" property="lunchSalary" jdbcType="INTEGER"/>
+            <result column="strafficSalary" property="trafficSalary" jdbcType="INTEGER"/>
+            <result column="sallSalary" property="allSalary" jdbcType="INTEGER"/>
+            <result column="spensionBase" property="pensionBase" jdbcType="INTEGER"/>
+            <result column="spensionPer" property="pensionPer" jdbcType="REAL"/>
+            <result column="screateDate" property="createDate" jdbcType="TIMESTAMP"/>
+            <result column="smedicalBase" property="medicalBase" jdbcType="INTEGER"/>
+            <result column="smedicalPer" property="medicalPer" jdbcType="REAL"/>
+            <result column="saccumulationFundBase" property="accumulationFundBase" jdbcType="INTEGER"/>
+            <result column="saccumulationFundPer" property="accumulationFundPer" jdbcType="REAL"/>
+            <result column="sname" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="department" javaType="org.zrd.vhr.bean.Department">
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+    <select id="getEmployeeByPageWithSalary" resultMap="EmployeeWithSalary">
+        select e.*, d.name as dname, s.id as sid, s.accumulationFundBase as saccumulationFundBase, s.accumulationFundPer as
+        saccumulationFundPer, s.allSalary as sallSalary, s.basicSalary as sbasicSalary, s.bonus as sbonus, s.createDate
+        as screateDate, s.lunchSalary as slunchSalary, s.medicalBase as smedicalBase, s.medicalPer as smedicalPer,
+        s.trafficSalary as strafficSalary, s.name as sname, s.pensionBase as spensionBase, s.pensionPer as spensionPer
+        from employee e left join empsalary es on e.id = es.eid left join salary s on es.sid = s.id left join department d on e.departmentId = d.id
+        <if test="page!=null and size!=null">
+            limit #{page},#{size}
+        </if>
+    </select>
     <select id="maxWordID" resultType="java.lang.Integer">
         select max(workID)
         from employee;
     </select>
     <select id="getEmployeeById" resultMap="AllEmployeeInfo">
-        select e.*, p.id as pid, p.name as pname, n.id as nid, n.name as nname, d.id as did, d.name as dname, j.id as
-                            jid, j.name as jname, pos.id as posid, pos.name as posname from employee e, nation n, politicsstatus p,
-                                                                                            department d, joblevel j, position pos where e.nationId=n.id and e.politicId=p.id and e.departmentId=d.id and
-            e.jobLevelId=j.id and e.posId=pos.id and e.id=#{id}
+        select e.*,
+               p.id     as pid,
+               p.name   as pname,
+               n.id     as nid,
+               n.name   as nname,
+               d.id     as did,
+               d.name   as dname,
+               j.id     as
+                           jid,
+               j.name   as jname,
+               pos.id   as posid,
+               pos.name as posname
+        from employee e,
+             nation n,
+             politicsstatus p,
+             department d,
+             joblevel j,
+             position pos
+        where e.nationId = n.id
+          and e.politicId = p.id
+          and e.departmentId = d.id
+          and e.jobLevelId = j.id
+          and e.posId = pos.id
+          and e.id = #{id}
     </select>
     <select id="getEmployeeByPage" resultMap="AllEmployeeInfo">
         select e.*, p.id as pid, p.name as pname, n.id as nid, n.name as nname, d.id as did, d.name as dname, j.id as
@@ -105,29 +156,31 @@
     <select id="getTotal" resultType="java.lang.Long">
         select count(*) from employee e
         <where>
-            <if test="emp.name != null and emp.name != ''">
-                and e.name like concat('%',#{emp.name},'%')
-            </if>
-            <if test="emp.politicId != null">
-                and e.politicId = #{emp.politicId}
-            </if>
-            <if test="emp.nationId != null">
-                and e.nationId = #{emp.nationId}
-            </if>
-            <if test="emp.jobLevelId != null">
-                and e.jobLevelId = #{emp.jobLevelId}
-            </if>
-            <if test="emp.posId != null">
-                and e.posId = #{emp.posId}
-            </if>
-            <if test="emp.engageForm != null and emp.engageForm != ''">
-                and e.engageForm = #{emp.engageForm}
-            </if>
-            <if test="emp.departmentId != null">
-                and e.departmentId = #{emp.departmentId}
-            </if>
-            <if test="beginDateScope != null">
-                and e.beginDate between #{beginDateScope[0]} and #{beginDateScope[1]}
+            <if test="emp!=null">
+                <if test="emp.name != null and emp.name != ''">
+                    and e.name like concat('%',#{emp.name},'%')
+                </if>
+                <if test="emp.politicId != null">
+                    and e.politicId = #{emp.politicId}
+                </if>
+                <if test="emp.nationId != null">
+                    and e.nationId = #{emp.nationId}
+                </if>
+                <if test="emp.jobLevelId != null">
+                    and e.jobLevelId = #{emp.jobLevelId}
+                </if>
+                <if test="emp.posId != null">
+                    and e.posId = #{emp.posId}
+                </if>
+                <if test="emp.engageForm != null and emp.engageForm != ''">
+                    and e.engageForm = #{emp.engageForm}
+                </if>
+                <if test="emp.departmentId != null">
+                    and e.departmentId = #{emp.departmentId}
+                </if>
+                <if test="beginDateScope != null">
+                    and e.beginDate between #{beginDateScope[0]} and #{beginDateScope[1]}
+                </if>
             </if>
         </where>
     </select>

@@ -68,6 +68,17 @@ public class EmployeeService {
     public Integer addEmps(List<Employee> list) {
         return employeeMapper.addEmps(list);
     }
+
+    public RespPageBean getEmployeeByPageWithSalary(Integer page, Integer size) {
+        if (page != null && size != null) {
+            page = (page - 1) * size;
+        }
+        List<Employee> list = employeeMapper.getEmployeeByPageWithSalary(page, size);
+        RespPageBean respPageBean = new RespPageBean();
+        respPageBean.setData(list);
+        respPageBean.setTotal(employeeMapper.getTotal(null, null));
+        return respPageBean;
+    }
 }
 
 

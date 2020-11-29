@@ -108,6 +108,16 @@ public class Employee implements Serializable {
 
     private Nation nation;
 
+    private Salary salary;
+
+    public Salary getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Salary salary) {
+        this.salary = salary;
+    }
+
     public Nation getNation() {
         return nation;
     }
