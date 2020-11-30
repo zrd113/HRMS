@@ -80,12 +80,15 @@
             <result column="dname" property="name"/>
         </association>
     </resultMap>
+    <insert id="updateEmployeeSalaryById">
+        replace into empsalary (eid, sid) VALUES(#{eid}, #{sid})
+    </insert>
     <select id="getEmployeeByPageWithSalary" resultMap="EmployeeWithSalary">
         select e.*, d.name as dname, s.id as sid, s.accumulationFundBase as saccumulationFundBase, s.accumulationFundPer as
         saccumulationFundPer, s.allSalary as sallSalary, s.basicSalary as sbasicSalary, s.bonus as sbonus, s.createDate
         as screateDate, s.lunchSalary as slunchSalary, s.medicalBase as smedicalBase, s.medicalPer as smedicalPer,
         s.trafficSalary as strafficSalary, s.name as sname, s.pensionBase as spensionBase, s.pensionPer as spensionPer
-        from employee e left join empsalary es on e.id = es.eid left join salary s on es.sid = s.id left join department d on e.departmentId = d.id
+        from employee e left join empsalary es on e.id = es.eid left join salary s on es.sid = s.id left join department d on e.departmentId = d.id order by e.id
         <if test="page!=null and size!=null">
             limit #{page},#{size}
         </if>
