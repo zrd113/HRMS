@@ -15,6 +15,16 @@ public class ChatMessage {
 
     private Date date;
 
+    public String getFromNickName() {
+        return fromNickName;
+    }
+
+    public void setFromNickName(String fromNickName) {
+        this.fromNickName = fromNickName;
+    }
+
+    private String fromNickName;
+
     public String getFrom() {
         return from;
     }
