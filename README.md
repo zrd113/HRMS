@@ -6,6 +6,7 @@ HRMS是一个人力资源管理系统后端部分，采用SpringBoot开发
 2. Spring Security
 3. MyBatis
 4. MySQL
+5. Redis
 
 ## 项目功能及效果图
 
