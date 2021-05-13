@@ -22,6 +22,20 @@ HRMS是一个人力资源管理系统后端部分，采用SpringBoot开发
 ### 管理员也可以管理用户可以操作的资源
 ![QQ截图20210310142052](https://user-images.githubusercontent.com/69740958/110585631-0bf69700-81ac-11eb-89a8-0e2623045adc.png)
 
+### 搜索功能
+![QQ截图20210507160151](https://user-images.githubusercontent.com/69740958/117418366-ea1c5500-af4d-11eb-892b-98d269ec92b3.png)
+
+### 添加员工功能
+![QQ截图20210507160203](https://user-images.githubusercontent.com/69740958/117418413-f7d1da80-af4d-11eb-8334-2df594cf0b74.png)
+
+### 员工账套设置
+![QQ截图20210507160250](https://user-images.githubusercontent.com/69740958/117418467-091ae700-af4e-11eb-82a8-ed40a3742980.png)
+
+### 部门管理设置
+![QQ截图20210507160323](https://user-images.githubusercontent.com/69740958/117418519-19cb5d00-af4e-11eb-9909-12f7d84cd6bc.png)
+
+### 职位管理设置
+![QQ截图20210507160333](https://user-images.githubusercontent.com/69740958/117418571-2780e280-af4e-11eb-98ba-ace730272709.png)
 
 
 
